@@ -10,6 +10,13 @@ os.chdir("C:\\Users\\harle\\Data Science\\Applied Data Science\\Data")
 #importing the data from an excel file into a pandas dataframe
 uk_max_temp = pd.read_excel("Assignment_1_figure_1_data_max_temp_UK.xlsx")
 
+#saving the columns that we want to work with from the dataframe as
+#specific variables
+winter = uk_max_temp["win"]
+summer = uk_max_temp["sum"]
+year = uk_max_temp["year"]
+
+
 def lineplot(uk_max_temp):
     """Creates a line plot of the mean maximum temperature against year for
     the seasons winter and summer, including labels and legend. The function
@@ -18,6 +25,7 @@ def lineplot(uk_max_temp):
     plt.figure()
     plt.plot(year, winter)
     plt.plot(year, summer)
+    plt.title("Mean Maximum Temperature for Summer and Winter 1884-2023")
     plt.xlabel("Year")
     plt.ylabel("Mean Max Temp °C")
     plt.xticks(year[::10], rotation=45)
@@ -31,8 +39,3 @@ def lineplot(uk_max_temp):
 #calling the function to create the plot and save the png
 lineplot(uk_max_temp)
 
-#saving the columns that we want to work with from the dataframe as
-#specific variables
-winter = uk_max_temp["win"]
-summer = uk_max_temp["sum"]
-year = uk_max_temp["year"]
