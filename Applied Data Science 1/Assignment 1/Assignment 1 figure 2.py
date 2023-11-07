@@ -54,8 +54,10 @@ labels_1960 = ["China", "India", "United States", "Russian Federation",
 labels_2022 = ["India", "China", "United States", "Indonesia", "Pakistan"]
 
 
-#plots a pie chart of the top 5 largest population countries in the year 1960
 def pieplot_1960(world_pop):
+    """Generates a pie chart of the top 5 countries by population in the
+    year 1960, then saves the plot as a png file
+    """
     plt.figure(1)
     plt.pie(top_1960, labels=labels_1960,
             colors=["C0", "C1", "C2", "C3", "C4"], autopct="%.2f%%")
@@ -66,9 +68,10 @@ def pieplot_1960(world_pop):
     return
 
 
-
-#plots a pie chart of the top 5 largest population countries in the year 2023
-def pieplot_2023(world_pop):
+def pieplot_2022(world_pop):
+    """Generates a pie chart of the top 5 countries by population in the
+    year 2022, then saves the plot as a png file
+    """
     plt.figure(2)
     plt.pie(top_2022, labels=labels_2022,
             colors=["C1", "C0", "C2", "C5", "C6"], autopct="%.2f%%")
@@ -78,7 +81,9 @@ def pieplot_2023(world_pop):
     
     return
 
+#calling the 1960 pie chart function
 pieplot_1960(world_pop)
 
-pieplot_2023(world_pop)
+#calling the 2022 pie chart function
+pieplot_2022(world_pop)
 
