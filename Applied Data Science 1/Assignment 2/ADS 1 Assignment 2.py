@@ -2,7 +2,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-#import stats as stats
 
 #Creating a function to return normal and transposed dataframes for later use
 #in plots
@@ -32,6 +31,7 @@ def create_dfs(df):
     df2 = df2.iloc[2:]
     return df1, df2
 
+
 #Creating list variables containing the various useful columns
 #of each dataframe (ignoring columns of string data or empty values)
 useful_rec = ["Country Name", "1990", "1991", "1992", "1993", "1994", "1995",
@@ -57,10 +57,6 @@ useful_ate = ["Country Name", "1990", "1991", "1992", "1993", "1994", "1995",
               "2004","2005", "2006", "2007", "2008", "2009", "2010", "2011", 
               "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019",
               "2020", "2021"]
-
-#Creating a list of years for use in any time series figures
-years = np.arange(1971, 2021)
-
 
 #Importing the data into pandas dataframes, skipping unnecessary columns and
 #rows, then running the dataframe through the create_dfs function to get
@@ -91,7 +87,34 @@ df_ate = pd.read_csv("access_to_electricity.csv", header=1, usecols=useful_ate,
 df_ate = df_ate.fillna(0)
 df_ate, df_ate_t = create_dfs(df_ate)
 
+#Creating a list of years for use in any time series figures
+years = np.arange(1971, 2021)
 
+#Selecting columns and rows for figures 2 and 3, calculating necessary
+#percentages, assigning labels and defining the exploded section
+reo2003 = [df_reo_t.loc["2003"]["World"]]
+pie2003_val = np.array([reo2003[0], 100 - reo2003[0]])
+reo2015 = [df_reo_t.loc["2015"]["World"]]
+pie2015_val = np.array([reo2015[0], 100 - reo2015[0]])
+labels = ["Renewable Electricity Output", "Non-renewable Electricity Output"]
+explode = (0, 0.1)
+
+#Selecting appropriate columns for figure 4
+brics = ["Brazil", "Russian Federation", "India", "China", "South Africa"]
+
+#Slicing dataframe to select values for only the brics countries and ensuring
+#that the data is numeric for the figure. Also included are the summary data
+# via describe() which provides various useful statistics, as well as sum() and 
+#pct_change() to further explore the data
+brics_eu = df_eu_t[brics]
+brics_eu = brics_eu.apply(pd.to_numeric)
+print(brics_eu.describe())
+print(brics_eu.sum())
+print(brics_eu.pct_change())
+
+
+#Plotting the first figure, a bar chart comparison of electrical consumption
+#between high income, and lower& middle incomes for the world's population
 plt.figure(1)
 plt.bar(years[0:-7], df_epc_t["High income"], label="High income",
         color="purple")
@@ -102,36 +125,40 @@ plt.ylabel("Electric power consumption (kWh per capita)")
 plt.legend()
 plt.title("Comparison of Electrical Consumption for High and Low & Middle"
           " Incomes")
+plt.savefig("assignment_2_fig_1.png", bbox_inches="tight")
 
-reo2003 = [df_reo_t.loc["2003"]["World"]]
-pie2003_val = np.array([reo2003[0], 100 - reo2003[0]])
 
-reo2015 = [df_reo_t.loc["2015"]["World"]]
-pie2015_val = np.array([reo2015[0], 100 - reo2015[0]])
-labels = ["Renewable Electricity Output", "Non-renewable Electricity Output"]
-explode = (0, 0.1)
-
+#Plotting the second figure, a pie chart of the total electrical output of
+#2003, split into renewable and non-renewable sources
 plt.figure(2)
-plt.pie(pie2003_val, explode=explode, labels=labels, colors=["forestgreen",
-                                                             "darkred"],
-        autopct="%1.1f%%", shadow=True)
+plt.pie(pie2003_val, explode=explode,
+        labels=labels, colors=["forestgreen", "darkred"], autopct="%1.1f%%",
+        shadow=True)
 plt.title("World Electrical Output 2003")
+plt.savefig("assignment_2_fig_2.png", bbox_inches="tight")
 
+
+#Plotting the third figure, a pie chart of the total electrical output of
+#2015, split into renewable and non-renewable sources
 plt.figure(3)
-plt.pie(pie2015_val, explode=explode, labels=labels, colors=["forestgreen",
-                                                             "darkred"],
-        autopct="%1.1f%%", shadow=True)
+plt.pie(pie2015_val, explode=explode,
+        labels=labels, colors=["forestgreen", "darkred"], autopct="%1.1f%%",
+        shadow=True)
 plt.title("World Electrical Output 2015")
-
-brics = ["Brazil", "Russian Federation", "India", "China", "South Africa"]
-brics1990 = [df_eu_t.loc["1990", brics]]
-print(brics1990)
-
-plt.figure(3)
-
-plt.show
+plt.savefig("assignment_2_fig_3.png", bbox_inches="tight")
 
 
+#Plotting the fourth figure, a box plot of the energy use of the brics
+#countries
+plt.figure(4)
+brics_box = brics_eu.mask(brics_eu == 0).boxplot(column=["Brazil",
+                                                         "Russian Federation",
+                                                         "India", "China",
+                                                         "South Africa"],
+                                                 grid=False)
+brics_box.set_ylabel("Energy use (kg of oil equivalent per capita)")
+brics_box.set_xlabel("Countries")
+brics_box.set_title("Energy Use of BRICS Countries 1971-2014")
+brics_box.figure.savefig("assignment_2_fig_4.png", bbox_inches="tight")
 
-
-
+plt.show()
