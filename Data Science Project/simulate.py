@@ -7,10 +7,15 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
     # Record starting distance
     start_distance = abs(charA.position - charB.position)
     append_to_buffer(
-        fight_id,
-        "SYSTEM",
-        "start_distance",
-        start_distance=start_distance
+        fight_id=fight_id,
+        actor="SYSTEM",
+        action="start_distance",
+        hit=None,
+        critical=None,
+        damage=None,
+        distance=None,
+        start_distance=start_distance,
+        total_rounds=None
     )
 
     while charA.is_alive() and charB.is_alive() and rounds < 50:
@@ -21,8 +26,7 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
         charB.inflict_disadv = False
 
         # Turn order
-        for actor, enemy, policy in [(charA, charB, policyA), (charB, charA,
-                                                               policyB)]:
+        for actor, enemy, policy in [(charA, charB, policyA), (charB, charA, policyB)]:
             if not actor.is_alive() or not enemy.is_alive():
                 break
 
@@ -34,8 +38,12 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
             # --------------------------
             if action == 0:
                 actor.move_towards(enemy)
-                append_to_buffer(fight_id, actor.name, "move",
-                                 distance=abs(actor.position - enemy.position))
+                append_to_buffer(
+                    fight_id=fight_id,
+                    actor=actor.name,
+                    action="move",
+                    distance=abs(actor.position - enemy.position)
+                )
                 continue
 
             # --------------------------
@@ -44,15 +52,23 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
             if action == 1:
                 if actor.is_adjacent(enemy):
                     result = actor.attack(enemy, primary=True)
-                    append_to_buffer(fight_id, actor.name, "atk_main",
-                                     hit=result["hit"],
-                                     critical=result["critical"],
-                                     damage=result["damage"],
-                                     distance=dist)
+                    append_to_buffer(
+                        fight_id=fight_id,
+                        actor=actor.name,
+                        action="atk_main",
+                        hit=result["hit"],
+                        critical=result["critical"],
+                        damage=result["damage"],
+                        distance=dist
+                    )
                 else:
                     actor.move_towards(enemy)
-                    append_to_buffer(fight_id, actor.name, "move_forced",
-                                     distance=abs(actor.position - enemy.position))
+                    append_to_buffer(
+                        fight_id=fight_id,
+                        actor=actor.name,
+                        action="move_forced",
+                        distance=abs(actor.position - enemy.position)
+                    )
                 continue
 
             # --------------------------
@@ -61,18 +77,26 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
             if action == 2:
                 if not actor.is_adjacent(enemy):
                     result = actor.attack(enemy, primary=False)
-                    append_to_buffer(fight_id, actor.name, "atk_backup",
-                                     hit=result["hit"],
-                                     critical=result["critical"],
-                                     damage=result["damage"],
-                                     distance=dist)
+                    append_to_buffer(
+                        fight_id=fight_id,
+                        actor=actor.name,
+                        action="atk_backup",
+                        hit=result["hit"],
+                        critical=result["critical"],
+                        damage=result["damage"],
+                        distance=dist
+                    )
                 else:
                     result = actor.attack(enemy, primary=True)
-                    append_to_buffer(fight_id, actor.name, "atk_main_forced",
-                                     hit=result["hit"],
-                                     critical=result["critical"],
-                                     damage=result["damage"],
-                                     distance=dist)
+                    append_to_buffer(
+                        fight_id=fight_id,
+                        actor=actor.name,
+                        action="atk_main_forced",
+                        hit=result["hit"],
+                        critical=result["critical"],
+                        damage=result["damage"],
+                        distance=dist
+                    )
                 continue
 
             # --------------------------
@@ -80,8 +104,12 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
             # --------------------------
             if action == 3 and dist == 0:
                 actor.apply_gain_advantage()
-                append_to_buffer(fight_id, actor.name, "gain_adv",
-                                 distance=dist)
+                append_to_buffer(
+                    fight_id=fight_id,
+                    actor=actor.name,
+                    action="gain_adv",
+                    distance=dist
+                )
                 continue
 
             # --------------------------
@@ -89,12 +117,39 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
             # --------------------------
             if action == 4 and dist == 0:
                 actor.apply_inflict_disadvantage()
-                append_to_buffer(fight_id, actor.name, "inflict_disadv",
-                                 distance=dist)
+                append_to_buffer(
+                    fight_id=fight_id,
+                    actor=actor.name,
+                    action="inflict_disadv",
+                    distance=dist
+                )
                 continue
 
     # Record total rounds in a SYSTEM row
-    append_to_buffer(fight_id, "SYSTEM", "total_rounds", total_rounds=rounds)
+    append_to_buffer(
+        fight_id=fight_id,
+        actor="SYSTEM",
+        action="total_rounds",
+        hit=None,
+        critical=None,
+        damage=None,
+        distance=None,
+        start_distance=start_distance,
+        total_rounds=rounds
+    )
 
-    winner = charA.name if charA.is_alive() else charB.name
-    return winner
+    # Record winner in a SYSTEM row with correct actor
+    winner_name = charA.name if charA.is_alive() else charB.name
+    append_to_buffer(
+        fight_id=fight_id,
+        actor=winner_name,
+        action="winner",
+        hit=None,
+        critical=None,
+        damage=None,
+        distance=None,
+        start_distance=start_distance,
+        total_rounds=rounds
+    )
+
+    return winner_name
