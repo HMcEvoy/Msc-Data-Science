@@ -4,7 +4,7 @@ from simulate import simulate_fight
 from logger import save_buffer_to_csv
 import random
 
-NUM_FIGHTS = 20000
+NUM_FIGHTS = 1000
 
 def run_batch():
     print(f"Running {NUM_FIGHTS} simulated fights...")
