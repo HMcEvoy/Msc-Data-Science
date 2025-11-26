@@ -2,7 +2,6 @@ import csv
 
 LOG_BUFFER = []
 
-# Updated header to include pre-fight stats
 CSV_HEADER = [
     "fight_id",
     "actor",
@@ -42,3 +41,4 @@ def save_buffer_to_csv(filename="fight_logs.csv"):
         writer.writerows(LOG_BUFFER)
     print(f"Saved {len(LOG_BUFFER)} rows into {filename}")
     LOG_BUFFER = []
+
