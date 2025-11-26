@@ -13,7 +13,6 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
         start_distance=start_distance
     )
 
-    # -------------------------------
     # Log pre-fight stats for ML
     for char in [charA, charB]:
         append_to_buffer(
@@ -28,7 +27,6 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
             dmg_main=char.damage_main,
             dmg_backup=char.damage_backup
         )
-    # -------------------------------
 
     while charA.is_alive() and charB.is_alive() and rounds < 50:
         rounds += 1
@@ -45,18 +43,14 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
             action = choose_action(policy, actor, enemy)
             dist = abs(actor.position - enemy.position)
 
-            # --------------------------
             # MOVE
-            # --------------------------
             if action == 0:
                 actor.move_towards(enemy)
                 append_to_buffer(fight_id, actor.name, "move",
                                  distance=abs(actor.position - enemy.position))
                 continue
 
-            # --------------------------
             # MAIN ATTACK
-            # --------------------------
             if action == 1:
                 if actor.is_adjacent(enemy):
                     result = actor.attack(enemy, primary=True)
@@ -71,9 +65,7 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
                                      distance=abs(actor.position - enemy.position))
                 continue
 
-            # --------------------------
             # BACKUP ATTACK
-            # --------------------------
             if action == 2:
                 if not actor.is_adjacent(enemy):
                     result = actor.attack(enemy, primary=False)
@@ -91,18 +83,14 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
                                      distance=dist)
                 continue
 
-            # --------------------------
             # GAIN ADVANTAGE
-            # --------------------------
             if action == 3 and dist == 0:
                 actor.apply_gain_advantage()
                 append_to_buffer(fight_id, actor.name, "gain_adv",
                                  distance=dist)
                 continue
 
-            # --------------------------
             # INFLICT DISADVANTAGE
-            # --------------------------
             if action == 4 and dist == 0:
                 actor.apply_inflict_disadvantage()
                 append_to_buffer(fight_id, actor.name, "inflict_disadv",
@@ -116,3 +104,4 @@ def simulate_fight(charA, charB, policyA, policyB, fight_id):
     winner = charA.name if charA.is_alive() else charB.name
     append_to_buffer(fight_id, winner, "winner")
     return winner
+
