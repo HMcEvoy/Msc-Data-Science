@@ -1,5 +1,7 @@
 HOW TO USE
 
+Refer to requirements.txt for the modules needed to run this code
+
 To run this project, run main.py. This will create a combat log file named fight_logs.csv
 If you want to alter any of the input parameters (HP, AC etc.) or the number of fights that take place, alter them only in main.py
 The number of fights will provide more data, but will also be more system intensive
