@@ -1,1 +1,10 @@
+HOW TO USE
 
+To run this project, run main.py. This will create a combat log file named fight_logs.csv
+If you want to alter any of the input parameters (HP, AC etc.) or the number of fights that take place, alter them only in main.py
+The number of fights will provide more data, but will also be more system intensive
+For character statisitics, by default they are random integers within standard ranges, but they can be set to simple integers, though any values beyond the d&d 5e standards are likely to heavily skew results
+
+Then run extract_features.py. This will convert the raw combat logs into a more interpretable table named fight_features.csv
+Finally, run train_random_forest.py. This will supply the data to a random forest classifier, split 75/25 into training and testing data, then it will output a series of performance scores
+The performance scores shown are the accuracy, classification report, a confusion matrix and a bar plot of feature importance
